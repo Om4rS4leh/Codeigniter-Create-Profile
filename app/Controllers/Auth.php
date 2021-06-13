@@ -42,6 +42,7 @@ class Auth extends BaseController
         $email = $this->request->getPost("email");
         $password = $this->request->getPost("password");
 
+        $adsdas = '';
         $hashedPassword = Hash::make($password);
         $emailVerificationCode = Hash::emailCode();
 
