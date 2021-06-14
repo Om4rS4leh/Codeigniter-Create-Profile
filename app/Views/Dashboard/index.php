@@ -43,6 +43,7 @@
                     </tbody>
                 </table>
             </div>
+            <a href="<?= site_url("/dashboard/profile") ?>">Edit Your Profile</a>
         </div>
 
     </div>

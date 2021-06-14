@@ -113,6 +113,94 @@ class Auth extends BaseController
         return redirect()->to("/dashboard")->with("success", "Logged In Successfuly!");
     }
 
+    public function findaccount()
+    {
+        return view("Auth/findaccount");
+    }
+
+    public function sendmail()
+    {
+        $validation =  Services::validation();
+        $validationResult = $validation->run($this->request->getPost(), 'findAccount');
+        if (!$validationResult) {
+            return view("auth/findaccount", ["validation" => $validation]);
+        }
+
+        $resetPassCode = Hash::emailCode();
+
+        $userModel = new UsersModel();
+        $user = $userModel->where("email", $this->request->getPost('email'))->first();
+
+        $config["SMTPUser"] = getenv('email.username');
+        $config["SMTPPass"] = getenv('email.password');
+
+        $email = Services::email();
+        $email->initialize($config);
+        $email->setTo($this->request->getPost("email"));
+        $email->setSubject('Password Reset');
+        $email->setMessage('Hello ' . ucfirst($user['name']) . '! <br> Due To Your Request For Resseting Your Password, <br>Click On The Link Below To Reset Your Password..<br><hr><a href="' . base_url('/auth/resetpass/' . $resetPassCode) . '">Verify Now</a>');
+        if (!$email->send()) {
+            return print_r($email->printDebugger(['headers']));
+        }
+
+        if (!$userModel->update($user['id'], ["resetPassCode" => $resetPassCode])) {
+            return redirect()->back()->with("danger", "Error Occured")->withInput();
+        }
+
+        return redirect()->to("auth/emailsent")->with("success", "Account Found, Please Check Your Mail To Reset Your Password...");
+    }
+
+    public function emailsent()
+    {
+        return null !== session()->getFlashdata('success') ? view('Auth/passwordreset') : redirect()->to("auth/login");
+    }
+
+    public function resetpass($seg1)
+    {
+        if (!isset($seg1) || empty($seg1)) {
+            return view('Auth/login');
+        }
+
+        $resetPassCode = $seg1;
+        $data = [
+            "resetPassCode" => $resetPassCode
+        ];
+
+        $usermodel = new UsersModel();
+        $user = $usermodel->where(['resetPassCode' => $resetPassCode])->first();
+        if (!isset($user['id'])) {
+            redirect()->to("/auth/login")->with("danger", "Invalid Password Resseting Code!");
+        }
+
+        return view('Auth/resetpass', $data);
+    }
+
+    public function toresetpass()
+    {
+        $validation =  Services::validation();
+        $validationResult = $validation->run($this->request->getPost(), 'findAccount');
+        if (!$validationResult) {
+            return view("auth/resetpass", ["validation" => $validation]);
+        }
+        $password = $this->request->getPost("newpassword");
+        $resetPassCode = $this->request->getPost('resetPassCode');
+        $hashedPassword = Hash::make($password);
+        $usermodel = new UsersModel();
+        $user = $usermodel->where(['resetPassCode' => $resetPassCode])->first();
+
+        if (!isset($user['id'])) {
+            return redirect()->to("/auth/login")->with("danger", "Invalid Password Resseting Code!");
+        }
+
+        if (!$usermodel->update($user['id'], ['password' => $hashedPassword])) {
+            return redirect()->back()->with("danger", "Error Happened : " . $usermodel->errors())->withInput();
+        }
+
+        return redirect()->to("/auth/login")->with("success", "Your Password Has Been Resseted Successfuly!");
+    }
+
+
+
     public function logout()
     {
         if (session()->has("userId")) {

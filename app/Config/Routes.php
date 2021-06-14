@@ -33,11 +33,14 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->get('/auth/verify/(:alphanum)', 'Auth::verify/$1');
+$routes->get('/auth/resetpass/(:alphanum)', 'Auth::resetpass/$1');
 
 $routes->group('', ['filter' => 'AuthCheck'], function ($routes) {
     $routes->get('/dashboard', "Dashboard::index");
+    $routes->get('/dashboard/profile', "Dashboard::profile");
+    $routes->get('/dashboard/save', "Dashboard::save");
 });
-$routes->group('', ['filter' => 'LoggedCheck'], function ($routes) {
+$routes->group('', ['filter' => 'LoggedOutCheck'], function ($routes) {
     $routes->get('/auth/login', "Auth::login");
     $routes->get('/auth/register', "Auth::register");
 });

@@ -1,27 +1,83 @@
 <?= $this->extend('layouts/default') ?>
-<?= $this->section('title') ?>Profile<?= $this->endSection('title') ?>
+
+<?= $this->section('title') ?>Profile<?= $this->endSection() ?>
+
+<?= $this->section('head') ?>
+<link href="<?= base_url('/Assets/CSS/profile.css') ?>" rel="stylesheet">
+<?= $this->endSection() ?>
+
 
 <?= $this->section('body') ?>
 
-<div class="container mt-5 pt-5">
-    <div class="row mt-5">
+<div class="container py-5">
+    <div class="row">
         <div class="col-4 offset-md-4">
             <h4>Profile Information</h4>
             <hr>
             <?= form_open_multipart('/dashboard/save'); ?>
             <form action="/dashboard/save" method="POST">
-                <div class="mt-3">
-                    <label for="avatar" class="form-label">Upload A Profile Picture</label>
-                    <input class="form-control" type="file" id="avatar" name="avatar">
+                <?= query_result_message(session()); ?>
+                <div class="form-group">
+                    <div class="avatar-upload">
+                        <input type='radio' id="imageUploaded" name="isImageUploaded" hidden />
+                        <div class="avatar-edit">
+                            <input type='file' id="imageUpload" name="avatar" accept=".png, .jpg, .jpeg" />
+                            <label for="imageUpload">
+                                <i class="imageUpload-label fas fa-pencil-alt"></i>
+                            </label>
+                        </div>
+                        <div class="avatar-preview">
+                            <?php
+                            $placeholderImage = isset($user['avatar']) ? base_url("/media/avatars/" . $user['avatar']) : base_url("Assets/images/user-avatar.png");
+                            ?>
+                            <div id="imagePreview" style="background-image: url(<?= $placeholderImage; ?>);">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mt-3 d-grid gap-2">
+
+                <?php
+                $validation = isset($validation) ? $validation : false;
+                echo generate_input_field($validation, $user['email'], 'email', 'Email') .
+                    generate_input_field($validation, $user['name'], 'name', 'Name',) .
+                    generate_input_field($validation, set_value('password'), 'password', 'Password', 'password'); ?>
+
+                <div class=" form-group mt-3 d-grid gap-2">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
+                <hr>
+                <div class=" form-group my-3 d-grid gap-2">
+                    <a class="btn btn-danger" href="<?= site_url("/dashboard/password") ?>">Change The Password</a>
+                </div>
             </form>
-            <hr>
+
             <a href="<?= site_url("/dashboard") ?>">Back to Dashboard..</a>
         </div>
 
     </div>
 </div>
-<?= $this->endSection('body') ?>
+
+
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#imageUpload").change(function() {
+        $("#imageUploaded").prop('checked', true);
+        readURL(this);
+    });
+</script>
+
+<?= $this->endSection() ?>
