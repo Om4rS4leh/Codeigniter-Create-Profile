@@ -12,7 +12,7 @@ class Dashboard extends BaseController
 {
     public function __construct()
     {
-        helper('form', 'url');
+        helper(['url', 'Form', 'Flashing']);
     }
 
     public function index()
@@ -46,7 +46,6 @@ class Dashboard extends BaseController
         $data = [
             'user' => $user
         ];
-
         $validation =  Services::validation();
         $validationResult = $validation->run($this->request->getPost(), 'editProfile');
         if (!$validationResult) {

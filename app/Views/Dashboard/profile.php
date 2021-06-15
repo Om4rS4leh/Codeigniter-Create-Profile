@@ -10,13 +10,14 @@
 <?= $this->section('body') ?>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-4 offset-md-4">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-7 col-md-6 col-lg-5 inner-container">
             <h4>Profile Information</h4>
             <hr>
             <?= form_open_multipart('/dashboard/save'); ?>
             <form action="/dashboard/save" method="POST">
-                <?= query_result_message(session()); ?>
+
+                <?= display_flash_messages(session()); ?>
                 <div class="form-group">
                     <div class="avatar-upload">
                         <input type='radio' id="imageUploaded" name="isImageUploaded" hidden />
@@ -37,10 +38,17 @@
                 </div>
 
                 <?php
+                $emailValue = isset($user['email']) ? $user['email'] : set_value('email');
+                $nameValue = isset($user['name']) ? $user['name'] : set_value('name');
                 $validation = isset($validation) ? $validation : false;
-                echo generate_input_field($validation, $user['email'], 'email', 'Email') .
-                    generate_input_field($validation, $user['name'], 'name', 'Name',) .
-                    generate_input_field($validation, set_value('password'), 'password', 'Password', 'password'); ?>
+                echo
+                generate_input_field($validation, ['value' => $emailValue, 'name' => 'email', 'label' => 'Email']) .
+                    generate_input_field($validation, ['value' => $nameValue, 'name' => 'name', 'label' => 'Name']) .
+                    generate_input_field($validation, ['value' => set_value('password'), 'name' => 'password', 'label' => 'Password']);
+                ?>
+
+                <?php $idValue = isset($user['id']) ? $user['id'] : set_value('id'); ?>
+                <input type="text" name="id" value="<?= $idValue ?>" hidden>
 
                 <div class=" form-group mt-3 d-grid gap-2">
                     <button type="submit" class="btn btn-primary">Submit</button>

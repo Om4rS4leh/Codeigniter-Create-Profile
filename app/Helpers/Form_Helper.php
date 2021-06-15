@@ -1,33 +1,33 @@
 <?php
 
-function display_error($validation, $field)
+function display_validation_error($validation, $field)
 {
     if ($validation) {
         if ($validation->hasError($field)) {
             return '<div class="alert alert-danger mt-2 py-2" role="alert">' . $validation->getError($field) . '</div>';
         } else {
-            return false;
+            return null;
         }
     }
 }
-function query_result_message($session)
+
+function generate_input_field($validation, $options)
 {
-    if (!empty(session()->getFlashdata())) {
-        foreach ($session->getFlashData() as $className => $message) {
-            if (in_array($className, ["success", "warning", "danger"])) {
-                return '<div class="alert alert-' . $className . ' mt-2 py-2" role="alert">' . $message . '</div>';
-            }
-        }
-    }
-}
-function generate_input_field($validation, $value, $name, $label, $type = "text", $placeholder = '')
-{
-    $placeholder = $placeholder !== '' ? $placeholder : "Enter Your " . $label;
+    $name = $options['name'];
+    $label = $options['label'];
+    $value = $options['value'];
+
+    $defaultPlaceHolder = "Enter Your " . $label;
+    $placeholder = isset($options['placeholder']) ? $options['placeholder'] : $defaultPlaceHolder;
+
+    $defaultType = strpos($name, 'password') !== false ? 'password' : 'text';
+    $type = isset($options['type']) ? $options['type'] : $defaultType;
+
     return '
         <div class="form-group mb-3">
             <label for="' . $name . '" class="form-label">' . $label . '</label>
-            <input class="form-control" placeholder="' . $placeholder . '" type="' . $type . '" name="' . $name . '" value="' . $value . '">
-            ' . display_error($validation, $name) . '
+            <input class="form-control" placeholder="' . $placeholder . '" type="' . $type . '" name="' . $name . '" value="' . $value . '" >
+            ' . display_validation_error($validation, $name) . '
         </div>
     ';
 }

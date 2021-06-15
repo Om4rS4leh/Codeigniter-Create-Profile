@@ -133,7 +133,7 @@ class Validation
             ],
         ],
         "email" => [
-            "rules" => 'required|valid_email|is_unique[users.email,email,{email}]',
+            "rules" => 'required|valid_email|is_unique[users.email,id,{id}]',
             "errors" => [
                 "required" => "Your Email is required...",
                 "valid_email" => "Please Enter A Valid Email...",

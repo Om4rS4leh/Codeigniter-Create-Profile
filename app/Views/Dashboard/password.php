@@ -6,18 +6,18 @@
 <?= $this->section('body') ?>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-4 offset-md-4">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-7 col-md-5 col-lg-4 inner-container">
             <h4>Change Password</h4>
             <hr>
             <form action="/dashboard/savepassword" method="POST">
                 <?php
                 $validation = isset($validation) ? $validation : false;
-                echo query_result_message(session()) .
-                    generate_input_field($validation, set_value('password'), 'password', 'Old Password', 'password') .
+                echo display_flash_messages(session()) .
+                    generate_input_field($validation, ['value' => set_value('password'), 'name' => 'password', 'label' => 'Old Password']) .
                     '<hr>' .
-                    generate_input_field($validation, set_value('newpassword'), 'newpassword', "New Password", "password") .
-                    generate_input_field($validation, set_value('cnewpassword'), 'cnewpassword', "New Password Confirmation", "password", "Enter Your New Password Again");
+                    generate_input_field($validation, ['value' => set_value('newpassword'), 'name' => 'newpassword', 'label' => "New Password"]) .
+                    generate_input_field($validation, ['value' => set_value('cnewpassword'), 'name' => 'cnewpassword', 'label' => "New Password Confirmation", 'placeholder' => "Enter Your New Password Again"]);
                 ?>
                 <div class=" form-group mt-3 d-grid gap-2">
                     <button type="submit" class="btn btn-primary">Change</button>

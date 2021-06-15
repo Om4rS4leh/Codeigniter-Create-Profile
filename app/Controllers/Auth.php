@@ -11,7 +11,7 @@ class Auth extends BaseController
 {
     public function __construct()
     {
-        helper(['url', 'Form']);
+        helper(['url', 'Form', 'Flashing']);
     }
 
     public function index()
@@ -152,7 +152,7 @@ class Auth extends BaseController
 
     public function emailsent()
     {
-        return null !== session()->getFlashdata('success') ? view('Auth/passwordreset') : redirect()->to("auth/login");
+        return null !== session()->getFlashdata('success') ? view('Auth/emailsent') : redirect()->to("auth/login");
     }
 
     public function resetpass($seg1)
@@ -178,7 +178,7 @@ class Auth extends BaseController
     public function toresetpass()
     {
         $validation =  Services::validation();
-        $validationResult = $validation->run($this->request->getPost(), 'findAccount');
+        $validationResult = $validation->run($this->request->getPost(), 'resetpass');
         if (!$validationResult) {
             return view("auth/resetpass", ["validation" => $validation]);
         }

@@ -3,21 +3,20 @@
 
 <?= $this->section('body') ?>
 
-<div class="container mt-5 pt-1">
-    <div class="row mt-5">
-
-        <div class="col-4 offset-md-4">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-7 col-md-6 col-lg-5 inner-container">
             <h4> Sign Up</h4>
             <hr>
             <form action="<?= base_url("auth/save"); ?>" method="POST">
                 <?php
                 $validation = isset($validation) ? $validation : false;
-                echo query_result_message(session()) .
+                echo display_flash_messages(session()) .
                     csrf_field() .
-                    generate_input_field($validation, set_value('name'), 'name', 'Name') .
-                    generate_input_field($validation, set_value('email'), 'email', 'Email') .
-                    generate_input_field($validation, set_value('password'), 'password', 'Password', 'password') .
-                    generate_input_field($validation, set_value('cpassword'), 'cpassword', 'Password Confirmation', 'password', "Enter Your Password Again...");
+                    generate_input_field($validation, ['value' => set_value('name'), 'name' => 'name', 'label' => 'Name']) .
+                    generate_input_field($validation, ['value' => set_value('email'), 'name' => 'email', 'label' => 'Email']) .
+                    generate_input_field($validation, ['value' => set_value('password'), 'name' => 'password', 'label' => 'Password']) .
+                    generate_input_field($validation, ['value' => set_value('cpassword'), 'name' => 'cpassword', 'label' => 'Password Confirmation', 'placeholder' => "Enter Your Password Again..."]);
                 ?>
 
                 <div class=" form-group mt-4 d-grid gap-2">
@@ -27,7 +26,6 @@
             <hr>
             <a href="<?= site_url("/auth/login"); ?>">I Already Have An Account..</a>
         </div>
-
     </div>
 </div>
 

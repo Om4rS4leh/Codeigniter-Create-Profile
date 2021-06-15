@@ -3,24 +3,16 @@
 
 <?= $this->section('body') ?>
 
-<div class="container mt-5 pt-1">
-    <div class="row mt-5">
-
-        <div class="col-4 offset-md-4">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 inner-container">
             <h4 class="text-center"> Dashboard</h4>
-            <?php
-            if (!empty(session()->getFlashdata())) {
-                foreach (session()->getFlashData() as $className => $message) {
-                    if (in_array($className, ["success", "warning", "danger"])) {
-                        echo '<div class="alert alert-' . $className . ' mt-2 py-2" role="alert">' . $message . '</div>';
-                    }
-                }
-            }
-            ?>
+
+            <?= display_flash_messages(session()); ?>
 
             <hr>
             <div>
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>

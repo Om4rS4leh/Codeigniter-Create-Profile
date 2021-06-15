@@ -4,16 +4,16 @@
 <?= $this->section('body') ?>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-4 offset-md-4">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-7 col-md-5 col-lg-4 inner-container">
             <h4>Reset Your Password</h4>
             <hr>
             <form action="<?= base_url("/auth/sendmail"); ?>" method="POST">
                 <?php
                 $validation = isset($validation) ? $validation : false;
-                echo query_result_message(session()) .
+                echo display_flash_messages(session()) .
                     csrf_field() .
-                    generate_input_field($validation, set_value('email'), 'email', 'Email');
+                    generate_input_field($validation, ['value' => set_value('email'), 'name' => 'email', 'label' => 'Email']);
                 ?>
 
                 <div class="form-group mt-3 d-grid gap-2">
